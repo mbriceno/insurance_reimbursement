@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# Node.js
+node_modules/
+dist/
+build/
+*.log
+.env*
+
+# Docker
+.dockerignore
+*.log*
+coverage/
+
+.speckit/
+speckit.json
+scripts/speckit/
+.github/spec-kit/
