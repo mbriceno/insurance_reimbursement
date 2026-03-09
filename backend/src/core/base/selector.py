@@ -1,25 +1,27 @@
-from typing import List, TypeVar, Optional, Any
+from typing import TypeVar
+
 from django.db import models
 
 T = TypeVar("T", bound=models.Model)
+
 
 class BaseSelector:
     """
     Base selector class for optimized read queries.
     Focuses on retrieving data efficiently.
     """
-    model: Type[T]
+    model: type[T]
 
     def get_queryset(self) -> models.QuerySet:
         return self.model.objects.all()
 
-    def list(self, filters: dict = None) -> List[T]:
+    def list(self, filters: dict = None) -> list[T]:
         queryset = self.get_queryset()
         if filters:
             queryset = queryset.filter(**filters)
         return list(queryset)
 
-    def get(self, **kwargs) -> Optional[T]:
+    def get(self, **kwargs) -> T | None:
         try:
             return self.get_queryset().get(**kwargs)
         except self.model.DoesNotExist:

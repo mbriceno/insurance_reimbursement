@@ -8,3 +8,4 @@ drf-spectacular
 pytest
 pytest-django
 pytest-cov
+djangorestframework-simplejwt==5.3.1

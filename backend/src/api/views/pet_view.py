@@ -1,7 +1,8 @@
+from api.models import Pet
+from api.serializers import PetSerializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from models.pet import Pet
-from api.serializers import PetSerializer
+
 
 class PetViewSet(viewsets.ModelViewSet):
     serializer_class = PetSerializer
@@ -9,7 +10,7 @@ class PetViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role in ['ADMIN', 'SUPPORT']:
+        if user.role in ["ADMIN", "SUPPORT"]:
             return Pet.objects.all()
         return Pet.objects.filter(owner=user)
 

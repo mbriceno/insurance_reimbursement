@@ -1,5 +1,5 @@
 from .repository import BaseRepository
-from .service import BaseService
 from .selector import BaseSelector
+from .service import BaseService
 
-__all__ = ['BaseRepository', 'BaseService', 'BaseSelector']
+__all__ = ["BaseRepository", "BaseSelector", "BaseService"]

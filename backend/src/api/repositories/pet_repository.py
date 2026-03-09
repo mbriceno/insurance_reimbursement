@@ -1,12 +1,11 @@
-from typing import List, Optional
+from api.models import Pet, User
 from core.base.repository import BaseRepository
-from models.pet import Pet
-from models.user import User
+
 
 class PetRepository(BaseRepository):
     model = Pet
 
-    def get_by_owner(self, owner: User) -> List[Pet]:
+    def get_by_owner(self, owner: User) -> list[Pet]:
         return self.filter(owner=owner)
 
     def create_for_owner(self, owner: User, **kwargs) -> Pet:

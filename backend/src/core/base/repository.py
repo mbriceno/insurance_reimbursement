@@ -1,21 +1,23 @@
-from typing import Type, TypeVar, Optional, List, Any
+from typing import TypeVar
+
 from django.db import models
 
 T = TypeVar("T", bound=models.Model)
 
+
 class BaseRepository:
-    model: Type[T]
+    model: type[T]
 
     def create(self, **kwargs) -> T:
         return self.model.objects.create(**kwargs)
 
-    def get(self, **kwargs) -> Optional[T]:
+    def get(self, **kwargs) -> T | None:
         try:
             return self.model.objects.get(**kwargs)
         except self.model.DoesNotExist:
             return None
 
-    def filter(self, **kwargs) -> List[T]:
+    def filter(self, **kwargs) -> list[T]:
         return list(self.model.objects.filter(**kwargs))
 
     def update(self, instance: T, **kwargs) -> T:
