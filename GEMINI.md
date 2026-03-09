@@ -5,6 +5,8 @@ Auto-generated from all feature plans. Last updated: 2026-03-08
 ## Active Technologies
 - Python 3.12+ + Django, Django REST Framework (DRF), djangorestframework-simplejwt (assumed for authentication) (003-user-auth)
 - PostgreSQL (as per docker-compose.yml) (003-user-auth)
+- Vue 3, Pinia, Vue Router, Axios, Tailwind CSS (004-frontend-application)
+- localStorage (for JWT tokens) (004-frontend-application)
 
 - Python 3.12+ (Backend), JavaScript/TypeScript (Frontend - Vue 3) + Django, Django REST Framework (DRF), Celery, Redis, Tailwind CSS, Vue 3 (Composition API) (001-pet-reimbursement)
 
@@ -24,10 +26,10 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.12+ (Backend), JavaScript/TypeScript (Frontend - Vue 3): Follow standard conventions
 
 ## Recent Changes
+- 004-frontend-application: Added Vue 3, Pinia, Vue Router, Axios, Tailwind CSS
 - 003-user-auth: Added Python 3.12+ + Django, Django REST Framework (DRF), djangorestframework-simplejwt (assumed for authentication)
 - 002-pet-reimbursement: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 
-- 001-pet-reimbursement: Added Python 3.12+ (Backend), JavaScript/TypeScript (Frontend - Vue 3) + Django, Django REST Framework (DRF), Celery, Redis, Tailwind CSS, Vue 3 (Composition API)
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

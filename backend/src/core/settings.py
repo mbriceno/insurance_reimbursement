@@ -119,6 +119,12 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
+# CORS Configuration
+# Only for the test, change values to production
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+
 # Swagger Configuration
 SPECTACULAR_SETTINGS = {
     "TITLE": "Pet Insurance API",

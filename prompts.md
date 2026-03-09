@@ -102,3 +102,82 @@ Phase 6: API Documentation & Quality
     - User Registration logic (role defaulting).
     - JWT token generation (role injection).
     - Claim submission (multipart validation).
+
+
+/speckit.specify Build a Vue 3 frontend with TypeScript and Options API:
+1. Architecture:
+   - Use Vue 3 with TypeScript and the Options API.
+   - Use Vue Router for navigation (Login, Dashboard, Claims List).
+   - Use Axios for API communication.
+2. User Registration (Public):
+   - Create 'RegisterView' with form validation for passwords matching.
+   - Redirect to 'LoginView' upon successful registration.
+   - Use Axios to call the /api/auth/register/ endpoint.
+   - Registration should NOT require authentication tokens.
+   - Use a 'try-except' block on the backend to catch integrity errors (duplicate emails) and return meaningful 400 Bad Request responses.
+3. Authentication:
+   - Allow users to sign in via POST /api/token/ (Obtain Pair).
+   - Implement an Axios Interceptor to automatically attach the JWT access token to every request header as 'Authorization: Bearer <token>'.
+   - Create a store (using Pinia or Vuex) to manage 'user' state (email, role) and 'isAuthenticated' status.
+   - Handle '401 Unauthorized' errors by attempting to refresh the token using the /api/token/refresh/ endpoint.
+4. Resource Creation (Ownership-based):
+   - Pet Creation: POST /api/pets/
+     - Allow authenticated users to register a new pet.
+     - Backend must auto-assign 'owner' = request.user.
+   - Insurance Creation: POST /api/insurances/
+     - Authenticated users create an insurance policy linked to their owned pet.
+     - Validation: Ensure 'pet.owner' == request.user.
+   - Claim Creation: POST /api/claims/
+     - Authenticated users submit a claim for an existing insurance.
+     - Validation: Ensure 'insurance.owner' == request.user.
+     - Support file upload via multipart/form-data.
+5. Views & Components:
+   - LoginView: A form to post credentials to /api/token/ and store the token.
+   - ClaimsView: A list component fetching from /api/claims/ using the authenticated state.
+   - AdminView: A restricted view for users with 'ADMIN' role to bulk-approve claims.
+6. UI/UX:
+   - Use a simple CSS framework (Tailwind) for the interface.
+   - Ensure the form inputs for file uploads in the ClaimsView correctly use 'multipart/form-data'.
+
+
+/speckit.specify frontend application - Target: Vue 3 + TypeScript + Options API (Single Page Application)
+1. Core Architecture:
+   - State Management: Pinia (store user session, auth tokens, and role).
+   - Router: Vue Router (guards for 'isAuthenticated' and 'isAdmin' routes).
+   - API Client: Axios (with request/response interceptors for JWT injection and token refresh).
+2. Authentication Workflows:
+   - Registration: Public POST /api/auth/register/.
+   - Login: Public POST /api/token/ (store access/refresh tokens in localStorage).
+   - Me: Authenticated GET /api/auth/me/ to sync profile data.
+3. Resource Workflows (CRUD):
+   - Pet Management: List, create, and detail views.
+   - Insurance: Create insurance policy linked to pet (UI logic: owner must select from their own pets).
+   - Claims: Submission view with 'multipart/form-data' file upload for invoices.
+4. UI/UX Standards:
+   - Layout: Navigation bar (conditional visibility based on auth status).
+   - Use a simple CSS framework (Tailwind) for the interface.
+   - Feedback: Global notification system for API errors (e.g., 400 Bad Request, 401 Unauthorized).
+
+
+/speckit.plan Project: Insurance Reimbursement Frontend (Vue 3 / TypeScript)
+Phase 1: Environment & Setup
+- Initialize Vite project with Vue 3 + TypeScript.
+- Install: Pinia, Vue Router, Axios.
+- Configure base Axios instances: 'apiPublic' and 'apiAuth' (with JWT interceptor).
+Phase 2: Auth Logic
+- Implement Pinia 'authStore':
+    - Actions: login(), register(), refresh(), logout().
+    - Persistence: Handle token refreshing logic via interceptor.
+- Create LoginView and RegisterView (using form validation).
+Phase 3: Protected Views & Resource Management
+- Create Layouts: 'AppLayout' (authenticated) vs 'PublicLayout' (guest).
+- Create 'PetsView': Fetch list of pets owned by user.
+- Create 'InsuranceView': Form with pet-selection dropdown.
+- Create 'ClaimsView': Form for file upload (must handle 'multipart/form-data').
+Phase 4: Role-based Restrictions
+- Implement Router Guards:
+    - Block access to Admin pages if role is not 'ADMIN'.
+    - Block access to Pet/Insurance pages if role is not 'CUSTOMER'.
+Phase 5: Refinement
+- Finalize UI styling and error handling.
+- Sync with Django Backend endpoints defined in previous specifications.
