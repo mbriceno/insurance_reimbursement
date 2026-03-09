@@ -26,5 +26,8 @@ class Claim(models.Model):
     file_hash = models.CharField(max_length=64, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        app_label = "api"
+
     def __str__(self) -> str:
         return f"Claim #{self.id} - {self.status}"

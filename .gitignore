@@ -18,7 +18,17 @@ build/
 *.log*
 coverage/
 
+.specify/*
+.specify/
+.gemini/*
+.gemini/
 .speckit/
 speckit.json
 scripts/speckit/
 .github/spec-kit/
+
+# Ignore everything inside media
+backend/src/media/*
+!backend/src/media/invoices/
+backend/src/media/invoices/*
+!backend/src/media/invoices/.keep

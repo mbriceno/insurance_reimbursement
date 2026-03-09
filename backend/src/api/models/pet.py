@@ -17,5 +17,8 @@ class Pet(models.Model):
     species = models.CharField(max_length=20, choices=Species.choices)
     birth_date = models.DateField()
 
+    class Meta:
+        app_label = "api"
+
     def __str__(self) -> str:
         return f"{self.name} ({self.species})"

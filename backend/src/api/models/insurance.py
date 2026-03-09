@@ -36,5 +36,8 @@ class PetInsurance(BaseInsurance):
         Pet, on_delete=models.CASCADE, related_name="insurance",
     )
 
+    class Meta:
+        app_label = "api"
+
     def __str__(self) -> str:
         return f"Policy for {self.pet.name} ({self.status})"

@@ -73,3 +73,32 @@ Phase 5: Interface Layer (API & Frontend)
 Phase 6: Quality Assurance
 - Pytest: Focus on testing the Service layer by mocking the Repository.
 - Documentation: Create a README.md justifying the choice of the Repository pattern for future horizontal scalability.
+
+
+/speckit.specify registration endpoint - Add specifications for User Management:
+1. User Registration: 
+   - Create an endpoint POST /api/auth/register/ that allows a guest to create a CUSTOMER account.
+   - The endpoint should validate email uniqueness and password strength.
+   - It should return the created user data but NOT the password.
+2. User Profile:
+   - Create an endpoint GET /api/auth/me/ that returns the authenticated user's details (email, role).
+   - Ensure the 'role' field is read-only (so a CUSTOMER cannot promote themselves to SUPPORT or ADMIN).
+3. Admin User Management (Optional/Internal):
+   - Since we are using Django Admin for the ADMIN role, no additional custom API endpoints are needed for creating SUPPORT or ADMIN users; rely on the Django Admin panel for this.
+4. Requirements for all Auth endpoints:
+   - Use DRF Serializers for input validation.
+   - Ensure the 'role' defaults to 'CUSTOMER' upon registration.
+
+
+/speckit.plan
+Architecture: Service-Repository-Selector
+Phase 1: Auth Service Layer
+- Create 'AuthService' to handle:
+    - Secure password hashing during user registration.
+- Implement '/api/auth/register/' endpoint for new CUSTOMER accounts.
+- Implement '/api/auth/me/' endpoint for profile retrieval (Read-only role).
+Phase 6: API Documentation & Quality
+- Write Unit Tests for:
+    - User Registration logic (role defaulting).
+    - JWT token generation (role injection).
+    - Claim submission (multipart validation).

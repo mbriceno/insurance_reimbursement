@@ -1,7 +1,37 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import Claim, Pet, PetInsurance
+from .services.user_service import UserService
+
+User = get_user_model()
+
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ("email", "password", "role")
+        read_only_fields = ("role",)
+
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError(
+                "Password must be at least 8 characters long.",
+            )
+        return value
+
+    def create(self, validated_data):
+        return UserService.create_user(**validated_data)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("email", "role")
+        read_only_fields = ("role",)
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
