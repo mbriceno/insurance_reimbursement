@@ -37,3 +37,5 @@ backend/src/media/*
 !backend/src/media/invoices/
 backend/src/media/invoices/*
 !backend/src/media/invoices/.keep
+
+insurance_reimbursement.code-workspace
