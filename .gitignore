@@ -25,6 +25,8 @@ coverage/
 .speckit/
 .spec/
 .spec/*
+specs/
+specs/*
 speckit.json
 scripts/speckit/
 .github/spec-kit/
