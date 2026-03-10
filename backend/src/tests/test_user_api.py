@@ -10,7 +10,7 @@ class TestUserAPI:
     def setup_method(self):
         self.client = APIClient()
 
-    def test_registration(self):
+    def test_registration(self) -> None:
         url = reverse("register")
         data = {"email": "apiuser@example.com", "password": "apipassword123"}
         response = self.client.post(url, data)
@@ -18,13 +18,15 @@ class TestUserAPI:
         assert response.data["email"] == data["email"]
         assert response.data["role"] == "CUSTOMER"
 
-    def test_profile_unauthenticated(self):
+    def test_profile_unauthenticated(self) -> None:
         url = reverse("me")
         response = self.client.get(url)
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_profile_authenticated(self):
-        user = User.objects.create_user(email="authuser@example.com", password="password123")
+    def test_profile_authenticated(self) -> None:
+        user = User.objects.create_user(
+            email="authuser@example.com", password="password123",
+        )
         self.client.force_authenticate(user=user)
         url = reverse("me")
         response = self.client.get(url)

@@ -8,7 +8,7 @@ from api.serializers import (
 
 @pytest.mark.django_db
 class TestUserSerializers:
-    def test_registration_serializer_valid_data(self):
+    def test_registration_serializer_valid_data(self) -> None:
         data = {
             "email": "newuser@example.com",
             "password": "strongpassword123",
@@ -18,7 +18,7 @@ class TestUserSerializers:
         assert serializer.validated_data["email"] == data["email"]
         assert serializer.validated_data["password"] == data["password"]
 
-    def test_registration_serializer_weak_password(self):
+    def test_registration_serializer_weak_password(self) -> None:
         data = {
             "email": "newuser@example.com",
             "password": "abc",
@@ -27,13 +27,19 @@ class TestUserSerializers:
         assert not serializer.is_valid()
         assert "password" in serializer.errors
 
-    def test_profile_serializer_read_only_role(self):
-        user = User.objects.create_user(email="test@example.com", password="password123", role=User.Role.CUSTOMER)
+    def test_profile_serializer_read_only_role(self) -> None:
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="password123",
+            role=User.Role.CUSTOMER,
+        )
         data = {
             "email": "updated@example.com",
             "role": User.Role.ADMIN,
         }
-        serializer = UserProfileSerializer(instance=user, data=data, partial=True)
+        serializer = UserProfileSerializer(
+            instance=user, data=data, partial=True,
+        )
         assert serializer.is_valid()
         serializer.save()
         user.refresh_from_db()
