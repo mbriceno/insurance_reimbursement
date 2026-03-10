@@ -4,24 +4,14 @@
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
         <label class="block text-sm font-medium text-gray-700">Select Pet</label>
-        <select v-model="form.pet_id" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+        <select v-model="form.pet" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
           <option v-for="pet in pets" :key="pet.id" :value="pet.id">{{ pet.name }} ({{ pet.species }})</option>
         </select>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Policy Number</label>
-        <input v-model="form.policy_number" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Coverage Details</label>
-        <textarea v-model="form.coverage_details" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" rows="3"></textarea>
-      </div>
-
-      <div class="flex items-center">
-        <input v-model="form.is_active" type="checkbox" class="h-4 w-4 text-blue-600 rounded" />
-        <label class="ml-2 block text-sm text-gray-900 font-medium">Policy is Active</label>
+        <label class="block text-sm font-medium text-gray-700">Coverage Start at</label>
+        <input type="date" v-model="form.coverage_start" required class="w-full border p-2 rounded mt-1" />
       </div>
 
       <div class="flex justify-end space-x-2">
@@ -50,10 +40,8 @@ const pets = ref<Pet[]>([]);
 const loading = ref(false);
 
 const form = ref({
-  pet_id: route.query.petId?.toString() || '',
-  policy_number: '',
-  coverage_details: '',
-  is_active: true,
+  pet: route.query.petId?.toString() || '',
+  coverage_start: '',
 });
 
 async function loadPets() {
@@ -73,7 +61,7 @@ async function handleSubmit() {
   try {
     await insuranceService.create(form.value);
     notificationStore.add('Policy created successfully!', 'success');
-    router.push('/pets/' + form.value.pet_id);
+    router.push('/pets/' + form.value.pet);
   } catch (err) {
     notificationStore.add('Failed to create policy', 'error');
   } finally {

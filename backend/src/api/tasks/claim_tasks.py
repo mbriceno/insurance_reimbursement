@@ -1,4 +1,4 @@
-import hashlib
+import time
 
 from api.models import Claim
 from celery import shared_task
@@ -9,28 +9,7 @@ def validate_claim_task(claim_id: int) -> str:
     try:
         claim = Claim.objects.get(id=claim_id)
 
-        # 1. Generate file hash
-        hasher = hashlib.sha256()
-        # Read file chunks to handle large files efficiently
-        for chunk in claim.invoice.chunks():
-            hasher.update(chunk)
-        file_hash = hasher.hexdigest()
-
-        claim.file_hash = file_hash
-
-        # 2. Check for duplicate hash
-        # Exclude self from query
-        if (
-            Claim.objects.filter(file_hash=file_hash)
-            .exclude(id=claim.id)
-            .exists()
-        ):
-            claim.status = Claim.Status.REJECTED
-            claim.review_notes = "Duplicate invoice upload detected."
-            claim.save()
-            return "REJECTED: Duplicate claim invoice"
-
-        # 3. Validate coverage period
+        # Validate coverage period
         insurance = claim.insurance
         if not (
             insurance.coverage_start
@@ -38,13 +17,24 @@ def validate_claim_task(claim_id: int) -> str:
             <= insurance.coverage_end
         ):
             claim.status = Claim.Status.REJECTED
-            claim.review_notes = f"Event date {claim.date_of_event} outside coverage period ({insurance.coverage_start} to {insurance.coverage_end})."
+            claim.review_notes = (
+                f"Event date {claim.date_of_event} outside "
+                f"coverage period ({insurance.coverage_start} "
+                f"to {insurance.coverage_end})."
+            )
             claim.save()
             return "REJECTED: Outside coverage"
 
-        # 4. If all valid, transition to IN_REVIEW
+        # If all valid, transition to IN_REVIEW
         claim.status = Claim.Status.IN_REVIEW
         claim.save()
+
+        # @TODO: Some logic to extract data from invoice, maybe implement
+        # gemini API to extract data?
+        # For now we implement a simple time to simulate this task
+        # consume large time period
+        time.sleep(30)
+
         return "IN_REVIEW: Validated"
 
     except Claim.DoesNotExist:

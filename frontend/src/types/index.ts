@@ -26,13 +26,14 @@ export interface InsurancePolicy {
 
 export interface Claim {
   id: number | string;
-  pet_id: number | string;
-  insurance_id: number | string;
+  pet: number | string;
+  insurance: number | string;
   amount: number;
-  description: string;
-  invoice_file: string; // URL to the file
+  review_notes: string;
+  invoice: string; // URL to the file
   status: ClaimStatus;
   date_of_event: string;
+  invoice_date: string;
 }
 
 export const SpeciesOptions = {

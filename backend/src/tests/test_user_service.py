@@ -1,8 +1,7 @@
 import pytest
-from django.contrib.auth import get_user_model
+from api.models import User
 from api.services.user_service import UserService
 
-User = get_user_model()
 
 @pytest.mark.django_db
 class TestUserService:
@@ -10,7 +9,7 @@ class TestUserService:
         email = "test@example.com"
         password = "password123"
         user = UserService.create_user(email=email, password=password)
-        
+
         assert user.email == email
         assert user.check_password(password)
         assert user.role == User.Role.CUSTOMER
@@ -21,6 +20,6 @@ class TestUserService:
         email = "test@example.com"
         password = "password123"
         UserService.create_user(email=email, password=password)
-        
-        with pytest.raises(Exception): # Django will raise IntegrityError
+
+        with pytest.raises(Exception):  # Django will raise IntegrityError
             UserService.create_user(email=email, password="anotherpassword")

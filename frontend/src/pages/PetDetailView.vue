@@ -19,12 +19,13 @@
     <div v-else class="space-y-4">
       <div v-for="policy in policies" :key="policy.id" class="bg-white p-4 rounded-lg shadow flex justify-between">
         <div>
-          <h3 class="font-medium">Policy #: {{ policy.policy_number }}</h3>
-          <p class="text-sm text-gray-600">{{ policy.coverage_details }}</p>
+          <h3 class="font-medium">Policy #: {{ policy.id }}</h3>
+          <p class="text-sm text-gray-600"><strong>Start at:</strong> {{ formatDate(policy.coverage_start) }}</p>
+          <p class="text-sm text-gray-600"><strong>Cover finish at:</strong> {{ formatDate(policy.coverage_end) }}</p>
         </div>
         <div class="text-right">
-          <span :class="policy.is_active ? 'text-green-600' : 'text-red-600'">
-            {{ policy.is_active ? 'Active' : 'Inactive' }}
+          <span :class="policy.status === 'ACTIVE'? 'text-green-600' : 'text-red-600'">
+            {{ policy.status === 'ACTIVE'? 'Active' : 'Inactive' }}
           </span>
         </div>
       </div>
@@ -38,6 +39,7 @@ import { useRoute } from 'vue-router';
 import { petService } from '../services/petService';
 import { insuranceService } from '../services/insuranceService';
 import type { Pet, InsurancePolicy } from '../types';
+import { formatDate } from '../utils/date';
 
 const route = useRoute();
 const pet = ref<Pet | null>(null);
@@ -54,7 +56,7 @@ async function loadData() {
     ]);
     pet.value = petData;
     // Client-side filtering as per policy that users can only see their own pet's policies
-    policies.value = allPolicies.filter(p => p.pet_id.toString() === id);
+    policies.value = allPolicies.filter(p => p.pet.toString() === id);
   } finally {
     loading.value = false;
   }

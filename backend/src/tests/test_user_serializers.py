@@ -1,15 +1,17 @@
 import pytest
-from django.contrib.auth import get_user_model
-from api.serializers import UserRegistrationSerializer, UserProfileSerializer
+from api.models import User
+from api.serializers import (
+    UserProfileSerializer,
+    UserRegistrationSerializer,
+)
 
-User = get_user_model()
 
 @pytest.mark.django_db
 class TestUserSerializers:
     def test_registration_serializer_valid_data(self):
         data = {
             "email": "newuser@example.com",
-            "password": "strongpassword123"
+            "password": "strongpassword123",
         }
         serializer = UserRegistrationSerializer(data=data)
         assert serializer.is_valid()
@@ -19,7 +21,7 @@ class TestUserSerializers:
     def test_registration_serializer_weak_password(self):
         data = {
             "email": "newuser@example.com",
-            "password": "abc"
+            "password": "abc",
         }
         serializer = UserRegistrationSerializer(data=data)
         assert not serializer.is_valid()
@@ -29,7 +31,7 @@ class TestUserSerializers:
         user = User.objects.create_user(email="test@example.com", password="password123", role=User.Role.CUSTOMER)
         data = {
             "email": "updated@example.com",
-            "role": User.Role.ADMIN
+            "role": User.Role.ADMIN,
         }
         serializer = UserProfileSerializer(instance=user, data=data, partial=True)
         assert serializer.is_valid()

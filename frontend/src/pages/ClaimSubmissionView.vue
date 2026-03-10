@@ -1,5 +1,32 @@
 <template>
-  <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
+  <div class="space-y-6">
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-semibold">Claims Submitted</h2>
+    </div>
+
+    <div v-if="claims.length === 0" class="bg-white p-8 text-center rounded-lg shadow">
+      No claims submmited yet.
+    </div>
+    <div v-else class="space-y-4">
+      <div v-for="claim in claims" :key="claim.id" class="bg-white p-4 rounded-lg shadow flex justify-between">
+        <div>
+          <h3 class="font-medium">Claim #: {{ claim.id }}</h3>
+          <p class="text-sm text-gray-600"><strong>Pet:</strong> {{ claim.invoice_date }}</p>
+          <p class="text-sm text-gray-600"><strong>Date of event:</strong> {{ formatDate(claim.date_of_event) }}</p>
+          <p class="text-sm text-gray-600"><strong>Invoice date:</strong> {{ formatDate(claim.invoice_date) }}</p>
+          <p class="text-sm text-gray-600"><strong>Amount:</strong> {{ claim.amount }}</p>
+          <p class="text-sm text-gray-600"><strong>Review Note:</strong> {{ claim.review_notes }}</p>
+        </div>
+        <div class="text-right">
+          <span class="text-orange-600">
+            {{ claim.status}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-2xl mx-auto mt-4 bg-white p-8 rounded-lg shadow">
     <h1 class="text-2xl font-bold mb-6">Submit Reimbursement Claim</h1>
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
@@ -56,7 +83,8 @@ import { petService } from '../services/petService';
 import { insuranceService } from '../services/insuranceService';
 import { claimService } from '../services/claimService';
 import { useNotificationStore } from '../store/notification';
-import type { Pet, InsurancePolicy } from '../types';
+import type { Pet, InsurancePolicy, Claim } from '../types';
+import { formatDate } from '../utils/date';
 
 const router = useRouter();
 const notificationStore = useNotificationStore();
@@ -65,6 +93,7 @@ const pets = ref<Pet[]>([]);
 const allPolicies = ref<InsurancePolicy[]>([]);
 const loading = ref(false);
 const selectedFile = ref<File | null>(null);
+const claims = ref<Claim[]>([]);
 
 const form = ref({
   pet_id: '',
@@ -80,12 +109,14 @@ const filteredPolicies = computed(() => {
 
 async function loadData() {
   try {
-    const [petsData, policiesData] = await Promise.all([
+    const [petsData, policiesData, claimsData] = await Promise.all([
       petService.getAll(),
-      insuranceService.getAll()
+      insuranceService.getAll(),
+      claimService.getAll(),
     ]);
     pets.value = petsData;
     allPolicies.value = policiesData;
+    claims.value = claimsData;
   } catch (err) {
     notificationStore.add('Failed to load required data', 'error');
   }
@@ -96,9 +127,18 @@ function handlePetChange() {
 }
 
 function handleFileChange(event: Event) {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files[0]) {
-    selectedFile.value = target.files[0];
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+
+  if (file && file.size > 1024 * 1024) {
+    notificationStore.add('The file is too large (maximum 1MB).', 'error');
+    input.value = '';
+    selectedFile.value = null;
+    return;
+  }
+
+  if (file) {
+    selectedFile.value = file;
   }
 }
 

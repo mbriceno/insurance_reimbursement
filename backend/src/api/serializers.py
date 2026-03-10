@@ -1,3 +1,6 @@
+import hashlib
+from typing import ClassVar
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -75,6 +78,14 @@ class PetInsuranceSerializer(serializers.ModelSerializer):
 
 class ClaimSerializer(serializers.ModelSerializer):
     invoice = serializers.FileField()
+    __exc_messages: ClassVar[dict[str, str]] = {
+        "insurance_owner": (
+            "You can only submit claims for your own insurance policies."
+        ),
+        "date_of_event": "Event date outside coverage period.",
+        "duplicate_invoice": "Claim rejected: Duplicate claim invoice",
+        "invoice_size": "The file is too large (maximum 1MB).",
+    }
 
     class Meta:
         model = Claim
@@ -95,6 +106,29 @@ class ClaimSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if value.owner != user:
             raise serializers.ValidationError(
-                "You can only submit claims for your own insurance policies.",
+                self.__exc_messages["insurance_owner"],
             )
         return value
+
+    def validate(self, data: dict) -> dict:
+        hasher = hashlib.sha256()
+        invoice = data["invoice"]
+
+        if invoice and invoice.size > 1024 * 1024:
+            raise serializers.ValidationError(
+                self.__exc_messages["invoice_size"],
+            )
+
+        for chunk in invoice.chunks():
+            hasher.update(chunk)
+        file_hash = hasher.hexdigest()
+
+        if (
+            Claim.objects.filter(file_hash=file_hash)
+            .exists()
+        ):
+            raise serializers.ValidationError(
+                self.__exc_messages["duplicate_invoice"],
+            )
+
+        return data

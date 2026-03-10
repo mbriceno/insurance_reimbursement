@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock
 
 import pytest
-from src.api.models import Claim, User
-from src.api.services.claim_service import ClaimService
+from api.models import Claim, User
+from api.services.claim_service import ClaimService
 
 
 @pytest.mark.django_db
@@ -17,7 +17,7 @@ class TestClaimService:
         # Mock Celery Task
         mock_task = MagicMock()
         monkeypatch.setattr(
-            "tasks.claim_tasks.validate_claim_task.delay", mock_task,
+            "api.tasks.claim_tasks.validate_claim_task.delay", mock_task,
         )
 
         service = ClaimService(mock_repo)
