@@ -23,9 +23,12 @@ coverage/
 .gemini/*
 .gemini/
 .speckit/
+.spec/
+.spec/*
 speckit.json
 scripts/speckit/
 .github/spec-kit/
+prompts.md
 
 # Ignore everything inside media
 backend/src/media/*
