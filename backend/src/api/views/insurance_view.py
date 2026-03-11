@@ -1,4 +1,5 @@
 from api.models import PetInsurance
+from api.permissions import IsCustomerOrReadOnly
 from api.serializers import PetInsuranceSerializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -6,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 class InsuranceViewSet(viewsets.ModelViewSet):
     serializer_class = PetInsuranceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, IsCustomerOrReadOnly)
 
     def get_queryset(self):
         user = self.request.user

@@ -1,3 +1,4 @@
+from api.permissions import IsCustomerOrReadOnly
 from api.repositories.claim_repository import ClaimRepository
 from api.selectors.claim_selector import ClaimSelector
 from api.serializers import ClaimSerializer
@@ -11,7 +12,7 @@ from rest_framework.response import Response
 
 class ClaimViewSet(viewsets.ModelViewSet):
     serializer_class = ClaimSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, IsCustomerOrReadOnly)
     parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
